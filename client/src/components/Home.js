@@ -28,7 +28,6 @@ class Home extends Component {
         isLoggedIn: true,
       });
     }
-    // this.props.fetchConversations();
   }
 
   componentDidMount() {
@@ -85,7 +84,3 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(withStyles(styles)(Home));
-
-// function Home2(props) {
-
-// }

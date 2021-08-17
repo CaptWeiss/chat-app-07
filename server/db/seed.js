@@ -4,13 +4,6 @@ const Conversation = require("./models/conversation");
 const Message = require("./models/message");
 
 async function seed() {
-  try {
-    console.log('Authenticating...');
-    await db.authenticate();
-    console.log('Connection has been established successfully.');
-  } catch (error) {
-    console.error('Unable to connect to the database:', error);
-  }
   await db.sync({ force: true });
   console.log("db synced!");
 
