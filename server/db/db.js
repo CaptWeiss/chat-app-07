@@ -1,7 +1,10 @@
 const Sequelize = require("sequelize");
 
-const db = new Sequelize(process.env.DATABASE_URL || "postgres://localhost:5432/messenger", {
-  logging: false
+const password = process.env.DB_PASSKEY;
+const db = new Sequelize('messenger', 'captweiss', password, {
+  logging: false,
+  host: 'localhost',
+  dialect: 'postgres'
 });
 
 module.exports = db;
