@@ -18,7 +18,10 @@ Create a .env file in the server directory and add your session secret (this can
 
 ```
 SESSION_SECRET = "your session secret"
-DB_PASSKEY="your db password"
+DB_PASSKEY="your database password"
+USERNAME="database authentication username"
+DB_NAME="databse name"
+HOST=
 ```
 
 In the server folder, install dependencies and then seed the database:

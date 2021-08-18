@@ -34,7 +34,7 @@ class Input extends Component {
   handleSubmit = async (event) => {
     event.preventDefault();
     const text = event.target.text.value;
-    if (!text || text.lenght < 1) return;
+    if (!text || text.lenght === 0) return;
     // add sender user info if posting to a brand new convo, so that the other user will have access to username, profile pic, etc.
     const reqBody = {
       text,
