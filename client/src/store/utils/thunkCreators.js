@@ -158,7 +158,7 @@ export const postMessage = (body) => async (dispatch) => {
 export const postReadReceipt = (body) => async (dispatch) => {
   if(!body?.conversationId) return ;
   try {
-    const { data } = await axios.patch("/api/messages/read", body);
+    const { data } = await axios.patch("/api/messages/markRead", body);
     const {updatedMessages,conversationId,updatedMessagesCount} = data ;
     if (updatedMessagesCount===0) return ;
     const updatedMessagesId = updatedMessages.map(msg=>msg.id);

@@ -44,13 +44,7 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-/**
- * {
- *    conversationId: 1,
- *    read: true
- * }
- */
-router.patch("/read", async (req, res, next) => {
+router.patch("/markRead", async (req, res, next) => {
   try {
     if (!req.user) return res.sendStatus(401);
     
