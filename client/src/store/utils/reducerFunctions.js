@@ -105,7 +105,6 @@ export const updateTypingFlagInStore = (state, payload) => {
 
 export const updateReadStatusInStore = (state, payload) => {
   const {conversationId,updatedMessagesId} = payload ;
-  console.log("ATTENTION",{payload});
   return state.map(convo => {
     if (convo.id === conversationId) {
       const updatedConvo = {...convo} ;
@@ -117,7 +116,6 @@ export const updateReadStatusInStore = (state, payload) => {
       const meta = findMsgReadStatus(updatedConvo);
       updatedConvo.unreadMessages = meta.unreadMessages;
       updatedConvo.lastReadMessageId = meta.lastReadMessageId;
-      console.log({calcLRMID:meta});
       return updatedConvo;
     } else {
       return convo;

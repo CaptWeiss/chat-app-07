@@ -8,7 +8,6 @@ const Messages = (props) => {
   React.useEffect(() => {
     const startReadFrom = document.getElementById(`message-focus-${lastReadMessageId}`);
     if(startReadFrom) {
-      console.log("scrolling into view");
       startReadFrom.scrollIntoView({behavior:'smooth',block:'start'});
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -28,7 +28,6 @@ const ActiveChat = (props) => {
 
   useEffect(() => {
     if (conversation.id && (conversation.unreadMessages>0)) {
-      console.log({props});
       props.postReadReceipt(conversation.id);
     }
   },[conversation.id, conversation.unreadMessages, props]);

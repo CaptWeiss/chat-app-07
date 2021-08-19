@@ -27,7 +27,6 @@ socket.on("connect", () => {
     store.dispatch(setTypingFlag(data.conversationId,data.typing));
   });
   socket.on("read-reciept", (data) => {
-    console.log({data});
     store.dispatch(setReadStatus(data.updatedMessagesId, data.conversationId));
   });
 });
