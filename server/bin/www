@@ -47,6 +47,15 @@ io.on("connection", (socket) => {
     });
   });
 
+  socket.on("read-reciept", (data) => {
+    const {updatedMessagesId,conversationId} = data ;
+    socket.broadcast.emit("read-reciept", {updatedMessagesId,conversationId});
+  });
+
+  socket.on("typing", (data) => {
+    socket.broadcast.emit("typing", data);
+  });
+
   socket.on("logout", (id) => {
     if (onlineUsers.includes(id)) {
       userIndex = onlineUsers.indexOf(id);

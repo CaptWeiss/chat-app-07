@@ -5,6 +5,7 @@ import {
   addConversation,
   setNewMessage,
   setSearchedUsers,
+  setReadStatus
 } from "../conversations";
 import { gotUser, setFetchingStatus } from "../user";
 
@@ -76,13 +77,51 @@ export const fetchConversations = () => async (dispatch) => {
       ...convo,
       messages: convo.messages.sort((a, b) => {
         return new Date(a.createdAt).valueOf() - new Date(b.createdAt).valueOf();
-      })
+      }),
+      typing: false
     }))
-    dispatch(gotConversations(sortedData));
+    const modifiedData = sortedData.map(convo => {
+      const meta = findMsgReadStatus(convo);
+      return {
+        ...convo,
+        lastReadMessageId: meta.lastReadMessageId,
+        unreadMessages: meta.unreadMessages
+      }
+    })
+    dispatch(gotConversations(modifiedData));
   } catch (error) {
     console.error(error);
   }
 };
+
+export function findMsgReadStatus(convo) {
+  const receivedMsgs = convo.messages.filter(msg => msg.senderId===convo.otherUser.id);
+  const sentMsgs = convo.messages.filter(msg => msg.senderId!==convo.otherUser.id);
+  let lastReadMessageId = -1
+  let readCount = 0 ;
+  const msgsLength = sentMsgs.length;
+  
+  sentMsgs.forEach((msg,idx,arr) => {
+    const nextMsgIdx = idx+1 ;
+    if(msg.read) {
+      if((nextMsgIdx<msgsLength)&&(!arr[nextMsgIdx].read)) lastReadMessageId = msg.id ;
+      readCount++;
+    }
+  })
+
+  if ((lastReadMessageId === -1) && (readCount === msgsLength)) {
+    lastReadMessageId = sentMsgs[msgsLength-1]?.id||-1 ;
+  }
+
+  let unreadMessages = 0;
+  receivedMsgs.forEach(msg => {
+    if (!msg.read) unreadMessages++ ;
+  })
+  return {
+    lastReadMessageId,
+    unreadMessages
+  }
+}
 
 const saveMessage = async (body) => {
   const { data } = await axios.post("/api/messages", body);
@@ -115,6 +154,28 @@ export const postMessage = (body) => async (dispatch) => {
     console.error(error);
   }
 };
+
+export const postReadReceipt = (body) => async (dispatch) => {
+  if(!body?.conversationId) return ;
+  try {
+    const { data } = await axios.patch("/api/messages/read", body);
+    const {updatedMessages,conversationId,updatedMessagesCount} = data ;
+    if (updatedMessagesCount===0) return ;
+    const updatedMessagesId = updatedMessages.map(msg=>msg.id);
+    dispatch(setReadStatus(updatedMessagesId, conversationId));
+    socket.emit("read-reciept", {
+      updatedMessagesId,
+      conversationId,
+    });
+  } catch (error) {
+    console.error(error);
+    alert(error.message);
+  }
+}
+
+export const broadcastTypingState = (payload) => {
+  socket.emit("typing", payload);
+}
 
 export const searchUsers = (searchTerm) => async (dispatch) => {
   try {

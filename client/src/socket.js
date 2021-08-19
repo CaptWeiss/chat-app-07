@@ -4,6 +4,8 @@ import {
   setNewMessage,
   removeOfflineUser,
   addOnlineUser,
+  setTypingFlag,
+  setReadStatus
 } from "./store/conversations";
 
 const socket = io(window.location.origin);
@@ -20,6 +22,13 @@ socket.on("connect", () => {
   });
   socket.on("new-message", (data) => {
     store.dispatch(setNewMessage(data.message, data.sender));
+  });
+  socket.on("typing", (data) => {
+    store.dispatch(setTypingFlag(data.conversationId,data.typing));
+  });
+  socket.on("read-reciept", (data) => {
+    console.log({data});
+    store.dispatch(setReadStatus(data.updatedMessagesId, data.conversationId));
   });
 });
 

@@ -8,6 +8,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-between",
     marginLeft: 20,
     flexGrow: 1,
+    position: 'relative',
   },
   username: {
     fontWeight: "bold",
@@ -17,14 +18,28 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 12,
     color: "#9CADC8",
     letterSpacing: -0.17,
+    maxWidth: "8rem",
+    textOverflow: "ellipsis",
+    overflow: "hidden",
+    whiteSpace: "nowrap",
   },
+  badge: {
+    backgroundColor: "#3C91FF",
+    color: "#fff",
+    padding: "2px 0.4rem 2px",
+    height: "fit-content",
+    borderRadius: "30px",
+    position: "absolute",
+    right: "5%",
+    top: "7px",
+  }
 }));
 
 const ChatContent = (props) => {
   const classes = useStyles();
 
   const { conversation } = props;
-  const { latestMessageText, otherUser } = conversation;
+  const { latestMessageText, otherUser, unreadMessages, typing } = conversation;
 
   return (
     <Box className={classes.root}>
@@ -33,9 +48,19 @@ const ChatContent = (props) => {
           {otherUser.username}
         </Typography>
         <Typography className={classes.previewText}>
-          {latestMessageText}
+          {
+            typing?
+            <em>Typing...</em>:
+            latestMessageText
+          }
         </Typography>
       </Box>
+      {
+        (unreadMessages>0)&&
+        <span className={classes.badge} >
+          {unreadMessages}
+        </span>
+      }
     </Box>
   );
 };
