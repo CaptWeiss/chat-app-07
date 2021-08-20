@@ -23,6 +23,11 @@ const useStyles = makeStyles((theme) => ({
     overflow: "hidden",
     whiteSpace: "nowrap",
   },
+  previewUnreadText: {
+    fontWeight: "bolder",
+    color: "black",
+    fontSize: "0.938rem",
+  },
   badge: {
     backgroundColor: "#3C91FF",
     color: "#fff",
@@ -47,7 +52,7 @@ const ChatContent = (props) => {
         <Typography className={classes.username}>
           {otherUser.username}
         </Typography>
-        <Typography className={classes.previewText}>
+        <Typography className={`${classes.previewText} ${unreadMessages>0?classes.previewUnreadText:''}`}>
           {
             typing?
             <em>Typing...</em>:

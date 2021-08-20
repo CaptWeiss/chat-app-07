@@ -10,8 +10,7 @@ const Messages = (props) => {
     if(startReadFrom) {
       startReadFrom.scrollIntoView({behavior:'smooth',block:'start'});
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[])
+  },[lastReadMessageId])
 
   return (
     <Box>

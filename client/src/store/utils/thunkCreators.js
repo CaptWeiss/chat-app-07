@@ -169,7 +169,6 @@ export const postReadReceipt = (body) => async (dispatch) => {
     });
   } catch (error) {
     console.error(error);
-    alert(error.message);
   }
 }
 

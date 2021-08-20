@@ -48,16 +48,31 @@ router.patch("/markRead", async (req, res, next) => {
   try {
     if (!req.user) return res.sendStatus(401);
     
+    const userId = req.user.id ;
     const {conversationId} = req.body ;
     if(!conversationId) return res.status(400).json({message:"conversationId is required"}) ;
-
+    const existingConvo = await Conversation.findOne({
+      where: {
+        id: {
+          [Op.eq]: conversationId
+        },
+        [Op.or]: {
+          user1Id: userId,
+          user2Id: userId,
+        },
+      }
+    });
+    const convoJSON = existingConvo.toJSON();
+    
+    if (convoJSON === null) return res.sendStatus(403);
+    
     const messages = await Message.update({read:true},{
       where: {
         conversationId: {
           [Op.eq]: conversationId,
         },
         senderId: {
-          [Op.not]: req.user.id,
+          [Op.not]: userId,
         },
         read: {
           [Op.eq]: false,
