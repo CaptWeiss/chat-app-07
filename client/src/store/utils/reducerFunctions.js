@@ -1,3 +1,5 @@
+import {findMsgReadStatus} from './thunkCreators';
+
 export const addMessageToStore = (state, payload) => {
   const { message, sender } = payload;
   // if sender isn't null, that means the message needs to be put in a brand new convo
@@ -8,6 +10,9 @@ export const addMessageToStore = (state, payload) => {
       messages: [message],
     };
     newConvo.latestMessageText = message.text;
+    const meta = findMsgReadStatus(newConvo);
+    newConvo.lastReadMessageId = meta.lastReadMessageId;
+    newConvo.unreadMessages = meta.unreadMessages;
     return [...state, newConvo];
   }
 
@@ -16,6 +21,9 @@ export const addMessageToStore = (state, payload) => {
       const updatedConvo = {...convo} ;
       updatedConvo.messages.push(message);
       updatedConvo.latestMessageText = message.text;
+      const meta = findMsgReadStatus(updatedConvo);
+      updatedConvo.lastReadMessageId = meta.lastReadMessageId;
+      updatedConvo.unreadMessages = meta.unreadMessages;
       return updatedConvo;
     } else {
       return convo;
@@ -70,13 +78,47 @@ export const addSearchedUsersToStore = (state, users) => {
 export const addNewConvoToStore = (state, recipientId, message) => {
   return state.map((convo) => {
     if (convo.otherUser.id === recipientId) {
-      const updatedConvo = convo ;
+      const updatedConvo = {...convo} ;
       updatedConvo.id = message.conversationId;
       updatedConvo.messages.push(message);
       updatedConvo.latestMessageText = message.text;
+      updatedConvo.typing = false;
+      const meta = findMsgReadStatus(updatedConvo);
+      updatedConvo.lastReadMessageId = meta.lastReadMessageId;
+      updatedConvo.unreadMessages = meta.unreadMessages;
       return updatedConvo;
     } else {
       return convo;
     }
   });
 };
+
+export const updateTypingFlagInStore = (state, payload) => {
+  return state.map((convo) => {
+    return convo.id === payload.conversationId ?
+    {
+      ...convo,
+      typing: payload.typing
+    } : convo
+  });
+}
+
+export const updateReadStatusInStore = (state, payload) => {
+  const {conversationId,updatedMessagesId} = payload ;
+  return state.map(convo => {
+    if (convo.id === conversationId) {
+      const updatedConvo = {...convo} ;
+
+      updatedConvo.messages = updatedConvo.messages.map(message => {
+        return updatedMessagesId.includes(message.id) ?
+          {...message,read: true}:message;
+      });
+      const meta = findMsgReadStatus(updatedConvo);
+      updatedConvo.unreadMessages = meta.unreadMessages;
+      updatedConvo.lastReadMessageId = meta.lastReadMessageId;
+      return updatedConvo;
+    } else {
+      return convo;
+    }
+  })
+}

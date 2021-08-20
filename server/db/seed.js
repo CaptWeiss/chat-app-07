@@ -5,7 +5,6 @@ const Message = require("./models/message");
 
 async function seed() {
   await db.sync({ force: true });
-  console.log("db synced!");
 
   const thomas = await User.create({
     username: "thomas",
@@ -32,11 +31,13 @@ async function seed() {
     conversationId: santaigoConvo.id,
     senderId: santiago.id,
     text: "Where are you from?",
+    read: true
   });
   await Message.create({
     conversationId: santaigoConvo.id,
     senderId: thomas.id,
     text: "I'm from New York",
+    read: true
   });
   await Message.create({
     conversationId: santaigoConvo.id,
