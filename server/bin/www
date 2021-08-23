@@ -1,8 +1,5 @@
 #!/usr/bin/env node
 
-/* Sets up the environment variables from your .env file*/
-require("dotenv").config();
-
 /**
  * Module dependencies.
  */
@@ -10,7 +7,10 @@ require("dotenv").config();
 const { app, sessionStore } = require("../app");
 const http = require("http");
 const db = require("../db");
+const { User } = require("../db/models");
 const onlineUsers = require("../onlineUsers");
+const cookie = require('cookie');
+const jwt = require("jsonwebtoken");
 
 /**
  * Get port from environment and store in Express.
@@ -31,7 +31,26 @@ const server = http.createServer(app);
 
 const io = require("socket.io")(server);
 
+io.use((socket, next) => {
+  const token = cookie.parse(socket.handshake.headers.cookie||'')['x-access-token'];
+  if (token) {
+    try {
+      const decoded = jwt.verify(token, process.env.SESSION_SECRET) ;
+      User.findOne({ where: { id: decoded.id }})
+        .then(user => {
+          socket.user = user.dataValues;
+          next();
+        });
+    } catch (error) {
+      next(error);
+    }
+  } else {
+    next(new Error("unauthorized"));
+  }
+});
+
 io.on("connection", (socket) => {
+  console.log(`${socket.user.username} is Connected!`);
   socket.on("go-online", (id) => {
     if (!onlineUsers.includes(id)) {
       onlineUsers.push(id);

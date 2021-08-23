@@ -13,7 +13,7 @@ export const addMessageToStore = (state, payload) => {
     const meta = findMsgReadStatus(newConvo);
     newConvo.lastReadMessageId = meta.lastReadMessageId;
     newConvo.unreadMessages = meta.unreadMessages;
-    return [...state, newConvo];
+    return [newConvo,...state];
   }
 
   return state.map((convo) => {
@@ -28,7 +28,12 @@ export const addMessageToStore = (state, payload) => {
     } else {
       return convo;
     }
-  });
+  }).sort((a,b) => {
+    if(a.id===message.conversationId) return -1
+    if (b.id === message.conversationId) return +1
+    return 0;
+  })
+  ;
 };
 
 export const addOnlineUserToStore = (state, id) => {

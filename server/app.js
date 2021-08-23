@@ -9,6 +9,7 @@ const db = require("./db");
 const { User } = require("./db/models");
 // create store for sessions to persist in database
 const sessionStore = new SequelizeStore({ db });
+const cookie = require('cookie');
 
 const { json, urlencoded } = express;
 
@@ -20,7 +21,7 @@ app.use(urlencoded({ extended: false }));
 app.use(express.static(join(__dirname, "public")));
 
 app.use(function (req, res, next) {
-  const token = req.headers["x-access-token"];
+  const token = cookie.parse(req.headers.cookie||'')['x-access-token'];
   if (token) {
     jwt.verify(token, process.env.SESSION_SECRET, (err, decoded) => {
       if (err) {
