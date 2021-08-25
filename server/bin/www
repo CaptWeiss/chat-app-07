@@ -93,7 +93,7 @@ io.on("connection", (socket) => {
 
   socket.on("logout", (id) => {
     if (onlineUsers[id]) {
-      delete onlineUsers[id] ;
+      delete onlineUsers[id];
       socket.broadcast.emit("remove-offline-user", id);
     }
   });
