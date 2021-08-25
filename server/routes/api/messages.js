@@ -29,8 +29,9 @@ router.post("/", async (req, res, next) => {
         user1Id: senderId,
         user2Id: recipientId,
       });
-      if (onlineUsers.includes(sender.id)) {
-        sender.online = true;
+      const onlineUser = onlineUsers[sender.id];
+      if (onlineUser) {
+        sender.online = onlineUser.online;
       }
     }
     const message = await Message.create({

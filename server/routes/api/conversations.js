@@ -62,10 +62,9 @@ router.get("/", async (req, res, next) => {
       }
 
       // set property for online status of the other user
-      if (onlineUsers.includes(convoJSON.otherUser.id)) {
-        convoJSON.otherUser.online = true;
-      } else {
-        convoJSON.otherUser.online = false;
+      const onlineUser = onlineUsers[convoJSON.otherUser.id];
+      if (onlineUser) {
+        convoJSON.otherUser.online = onlineUser.online;
       }
 
       // set properties for notification count and latest message preview

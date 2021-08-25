@@ -6,7 +6,7 @@
     "dev": "nodemon -r dotenv/config ./bin/www",
     "debug": "nodemon -r dotenv/config --inspect ./bin/www",
     "test": "NODE_ENV=test ./node_modules/.bin/mocha --exit --timeout 30000",
-    "seed": "node db/seed.js"
+    "seed": "node -r dotenv/config db/seed.js"
   },
   "dependencies": {
     "connect-session-sequelize": "^7.0.4",
