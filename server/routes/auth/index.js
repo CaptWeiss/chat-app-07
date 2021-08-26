@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const { User } = require("../../db/models");
 const jwt = require("jsonwebtoken");
+const cookie = require("cookie");
 
 router.post("/register", async (req, res, next) => {
   try {
@@ -26,6 +27,13 @@ router.post("/register", async (req, res, next) => {
       process.env.SESSION_SECRET,
       { expiresIn: 86400 }
     );
+    res.setHeader('Set-Cookie', cookie.serialize("x-access-token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV !== 'development',
+      sameSite: 'strict',
+      maxAge: 86400,
+      path: '/'
+    }))
     res.json({
       ...user.dataValues,
       token,
@@ -64,6 +72,13 @@ router.post("/login", async (req, res, next) => {
         process.env.SESSION_SECRET,
         { expiresIn: 86400 }
       );
+      res.setHeader('Set-Cookie', cookie.serialize("x-access-token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV !== 'development',
+        sameSite: 'strict',
+        maxAge: 86400,
+        path: '/'
+      }))
       res.json({
         ...user.dataValues,
         token,
@@ -75,6 +90,18 @@ router.post("/login", async (req, res, next) => {
 });
 
 router.delete("/logout", (req, res, next) => {
+  if (!req.user) return res.sendStatus(204);
+  const token = cookie.parse(req.headers.cookie || '')['x-access-token'];
+  if (!token) return res.sendStatus(204);
+
+  res.setHeader('Set-Cookie', cookie.serialize("x-access-token", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV !== 'development',
+    sameSite: 'strict',
+    maxAge: 0,
+    path: '/'
+  }))
+
   res.sendStatus(204);
 });
 

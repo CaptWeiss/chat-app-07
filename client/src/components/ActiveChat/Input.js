@@ -49,6 +49,7 @@ class Input extends Component {
       if (!(prevState === state)) {
         this.props.broadcastTypingState({
           conversationId: this.props.conversationId,
+          recipientId: this.props.otherUser.id,
           typing: state
         });
       }

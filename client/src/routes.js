@@ -7,13 +7,13 @@ import Login from "./Login.js";
 import { Home, SnackbarError } from "./components";
 
 const Routes = (props) => {
-  const { user, fetchUser } = props;
+  const { user, fetchUserFromProps } = props;
   const [errorMessage, setErrorMessage] = useState("");
   const [snackBarOpen, setSnackBarOpen] = useState(false);
 
   useEffect(() => {
-    fetchUser();
-  }, [fetchUser]);
+    fetchUserFromProps();
+  }, [fetchUserFromProps]);
 
   useEffect(() => {
     if (user.error) {
@@ -62,7 +62,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchUser() {
+    fetchUserFromProps() {
       dispatch(fetchUser());
     },
   };
