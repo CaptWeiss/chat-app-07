@@ -89,24 +89,24 @@ export function findMsgReadStatus(convo) {
   const receivedMsgs = convo.messages.filter(msg => msg.senderId===convo.otherUser.id);
   const sentMsgs = convo.messages.filter(msg => msg.senderId!==convo.otherUser.id);
   let lastReadMessageId = -1
-  let readCount = 0 ;
+  let readCount = 0;
   const msgsLength = sentMsgs.length;
   
   sentMsgs.forEach((msg,idx,arr) => {
-    const nextMsgIdx = idx+1 ;
+    const nextMsgIdx = idx+1;
     if(msg.read) {
-      if((nextMsgIdx<msgsLength)&&(!arr[nextMsgIdx].read)) lastReadMessageId = msg.id ;
+      if((nextMsgIdx<msgsLength)&&(!arr[nextMsgIdx].read)) lastReadMessageId = msg.id;
       readCount++;
     }
   })
 
   if ((lastReadMessageId === -1) && (readCount === msgsLength)) {
-    lastReadMessageId = sentMsgs[msgsLength-1]?.id||-1 ;
+    lastReadMessageId = sentMsgs[msgsLength-1]?.id||-1;
   }
 
   let unreadMessages = 0;
   receivedMsgs.forEach(msg => {
-    if (!msg.read) unreadMessages++ ;
+    if (!msg.read) unreadMessages++;
   })
   return {
     lastReadMessageId,
@@ -130,7 +130,7 @@ const sendMessage = (data, body) => {
 // message format to send: {recipientId, text, conversationId}
 // conversationId will be set to null if its a brand new conversation
 export const postMessage = (body) => async (dispatch) => {
-  if(!body) return ;
+  if(!body) return;
   try {
     const data = await saveMessage(body);
 
@@ -147,11 +147,11 @@ export const postMessage = (body) => async (dispatch) => {
 };
 
 export const postReadReceipt = (body) => async (dispatch) => {
-  if(!body?.conversationId) return ;
+  if(!body?.conversationId) return;
   try {
     const { data } = await axios.patch("/api/messages/markRead", body);
-    const {updatedMessages,conversationId,updatedMessagesCount} = data ;
-    if (updatedMessagesCount===0) return ;
+    const {updatedMessages,conversationId,updatedMessagesCount} = data;
+    if (updatedMessagesCount===0) return;
     const updatedMessagesId = updatedMessages.map(msg=>msg.id);
     dispatch(setReadStatus(updatedMessagesId, conversationId));
     socket.emit("read-reciept", {

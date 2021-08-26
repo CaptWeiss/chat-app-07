@@ -14,7 +14,7 @@ const styles = {
     display: "flex",
     alignItems: "center",
     "&:hover": {
-      cursor: "grab",
+      cursor: "pointer",
     },
   },
 };
@@ -31,6 +31,7 @@ class Chat extends Component {
       <Box
         onClick={() => this.handleClick(this.props.conversation)}
         className={classes.root}
+        data-selected-chat={otherUser.username}
       >
         <BadgeAvatar
           photoUrl={otherUser.photoUrl}
