@@ -42,9 +42,9 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const OtherUserTypingBubble = (props) => {
+const OtherUserTypingBubble = ({otherUser}:IOtherUserTypingBubbleProps) => {
   const classes = useStyles();
-  const { otherUser } = props;
+  
   return (
     <Box className={classes.root}>
       <Avatar alt={otherUser.username} src={otherUser.photoUrl} className={classes.avatar}></Avatar>
@@ -65,3 +65,7 @@ const OtherUserTypingBubble = (props) => {
 };
 
 export default OtherUserTypingBubble;
+
+interface IOtherUserTypingBubbleProps {
+  otherUser: IOtherUserDTO
+}
