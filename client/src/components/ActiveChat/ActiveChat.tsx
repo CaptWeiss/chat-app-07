@@ -67,7 +67,6 @@ const defaultConvo: IConversationDTO = {
 }
 
 const mapStateToProps = (state: IStateDTO) => {
-  console.log('mapStateToProps: ', {state});
   return {
     user: state.user,
     conversation:
