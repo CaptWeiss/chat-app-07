@@ -35,13 +35,13 @@ io.use((socket, next) => {
   const token = cookie.parse(socket.handshake.headers.cookie||'')['x-access-token'];
   if (token) {
     try {
-      const decoded = jwt.verify(token, process.env.SESSION_SECRET) ;
+      const decoded = jwt.verify(token, process.env.SESSION_SECRET);
       User.findOne({ where: { id: decoded.id }})
         .then(user => {
           socket.user = user.toJSON();
-          const onlineUser = onlineUsers[decoded.id] ;
+          const onlineUser = onlineUsers[decoded.id];
           if(onlineUser) {
-            onlineUsers[decoded.id].socketId = socket.id ;
+            onlineUsers[decoded.id].socketId = socket.id;
           }else {
             onlineUsers[decoded.id] = {
               online: false,
@@ -64,14 +64,14 @@ io.on("connection", (socket) => {
       onlineUsers[id] = {
         online: true,
         socketId: socket.id
-      } ;
+      };
       // send the user who just went online to everyone else who is already online
       socket.broadcast.emit("add-online-user", id);
     }
   });
 
   socket.on("new-message", (data) => {
-    const {recipientId,...rest} = data ;
+    const {recipientId,...rest} = data;
     if(onlineUsers[recipientId]) {
       io.to(onlineUsers[recipientId].socketId)
         .emit("new-message", rest);
@@ -79,12 +79,12 @@ io.on("connection", (socket) => {
   });
 
   socket.on("read-reciept", (data) => {
-    const {updatedMessagesId,conversationId} = data ;
+    const {updatedMessagesId,conversationId} = data;
     socket.broadcast.emit("read-reciept", {updatedMessagesId,conversationId});
   });
 
   socket.on("typing", (data) => {
-    const {recipientId,...rest} = data ;
+    const {recipientId,...rest} = data;
     if(onlineUsers[recipientId]) {
       io.to(onlineUsers[recipientId].socketId)
         .emit("typing", rest);
@@ -100,7 +100,7 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", (id) => {
     if("user" in socket) {
-      const id = socket.user.id ;
+      const id = socket.user.id;
       if (onlineUsers[id]) {
         delete onlineUsers[id];
         socket.broadcast.emit("remove-offline-user", id);

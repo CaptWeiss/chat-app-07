@@ -49,9 +49,9 @@ router.patch("/markRead", async (req, res, next) => {
   try {
     if (!req.user) return res.sendStatus(401);
     
-    const userId = req.user.id ;
-    const {conversationId} = req.body ;
-    if(!conversationId) return res.status(400).json({message:"conversationId is required"}) ;
+    const userId = req.user.id;
+    const {conversationId} = req.body;
+    if(!conversationId) return res.status(400).json({message:"conversationId is required"});
     const existingConvo = await Conversation.findOne({
       where: {
         id: {

@@ -1,16 +1,16 @@
-import React from "react";
+import React, {useEffect, useRef} from "react";
 import { Box } from "@material-ui/core";
-import { SenderBubble, OtherUserBubble, OtherUserTypingBubble } from "../ActiveChat";
+import { SenderBubble, OtherUserBubble, OtherUserTypingBubble } from ".";
 import moment from "moment";
 
-const Messages = (props) => {
-  const { messages, otherUser, userId, typing, lastReadMessageId } = props;
-  React.useEffect(() => {
-    const startReadFrom = document.getElementById(`message-focus-${lastReadMessageId}`);
-    if(startReadFrom) {
-      startReadFrom.scrollIntoView({behavior:'smooth',block:'start'});
+const Messages = ({ messages, otherUser, userId, typing, lastReadMessageId }:IMessagesProps) => {
+  const msgEndRef = useRef<HTMLDivElement>(null);
+  
+  useEffect(() => {
+    if(msgEndRef.current) {
+      msgEndRef.current.scrollIntoView({behavior:'smooth',block:'start'});
     }
-  },[lastReadMessageId])
+  },[messages.length]);
 
   return (
     <Box>
@@ -29,8 +29,17 @@ const Messages = (props) => {
           );
       })}
       {typing&&<OtherUserTypingBubble otherUser={otherUser} />}
+      <div ref={msgEndRef}></div>
     </Box>
   );
 };
 
 export default Messages;
+
+interface IMessagesProps {
+  messages: IMessageDTO[];
+  otherUser: IOtherUserDTO;
+  userId: number;
+  typing: boolean;
+  lastReadMessageId: number;
+}

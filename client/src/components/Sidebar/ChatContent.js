@@ -47,12 +47,17 @@ const ChatContent = (props) => {
   const { latestMessageText, otherUser, unreadMessages, typing } = conversation;
 
   return (
-    <Box className={classes.root}>
+    <Box
+      className={classes.root}
+      data-selected-chat={otherUser.username}
+    >
       <Box>
-        <Typography className={classes.username}>
+        <Typography className={classes.username} data-selected-chat={otherUser.username}>
           {otherUser.username}
         </Typography>
-        <Typography className={`${classes.previewText} ${unreadMessages>0?classes.previewUnreadText:''}`}>
+        <Typography className={`${classes.previewText} ${unreadMessages>0?classes.previewUnreadText:''}`}
+          data-selected-chat={otherUser.username}
+        >
           {
             typing?
             <em>Typing...</em>:

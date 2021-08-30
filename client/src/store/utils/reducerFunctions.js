@@ -18,7 +18,7 @@ export const addMessageToStore = (state, payload) => {
 
   return state.map((convo) => {
     if (convo.id === message.conversationId) {
-      const updatedConvo = {...convo} ;
+      const updatedConvo = {...convo};
       updatedConvo.messages.push(message);
       updatedConvo.latestMessageText = message.text;
       const meta = findMsgReadStatus(updatedConvo);
@@ -32,8 +32,7 @@ export const addMessageToStore = (state, payload) => {
     if(a.id===message.conversationId) return -1
     if (b.id === message.conversationId) return +1
     return 0;
-  })
-  ;
+  });
 };
 
 export const addOnlineUserToStore = (state, id) => {
@@ -83,7 +82,7 @@ export const addSearchedUsersToStore = (state, users) => {
 export const addNewConvoToStore = (state, recipientId, message) => {
   return state.map((convo) => {
     if (convo.otherUser.id === recipientId) {
-      const updatedConvo = {...convo} ;
+      const updatedConvo = {...convo};
       updatedConvo.id = message.conversationId;
       updatedConvo.messages.push(message);
       updatedConvo.latestMessageText = message.text;
@@ -109,10 +108,10 @@ export const updateTypingFlagInStore = (state, payload) => {
 }
 
 export const updateReadStatusInStore = (state, payload) => {
-  const {conversationId,updatedMessagesId} = payload ;
+  const {conversationId,updatedMessagesId} = payload;
   return state.map(convo => {
     if (convo.id === conversationId) {
-      const updatedConvo = {...convo} ;
+      const updatedConvo = {...convo};
 
       updatedConvo.messages = updatedConvo.messages.map(message => {
         return updatedMessagesId.includes(message.id) ?

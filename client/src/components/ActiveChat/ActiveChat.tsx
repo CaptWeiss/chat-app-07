@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box } from "@material-ui/core";
-import { Input, Header, Messages } from "./index";
+import { Input, Messages } from "./index";
 import { connect } from "react-redux";
 import {postReadReceipt} from '../../store/utils/thunkCreators'
 
@@ -17,29 +17,24 @@ const useStyles = makeStyles(() => ({
     display: "flex",
     flexDirection: "column",
     flexGrow: 1,
-    justifyContent: "space-between"
+    justifyContent: "space-between",
+    minHeight: "85vh"
   }
 }));
 
-const ActiveChat = (props) => {
+const ActiveChat = ({conversation,postReadReceipt,user}: IActiveChatProps) => {
   const classes = useStyles();
-  const { user } = props;
-  const conversation = props.conversation || {};
 
   useEffect(() => {
     if (conversation.id && (conversation.unreadMessages>0)) {
-      props.postReadReceipt(conversation.id);
+      postReadReceipt(conversation.id);
     }
-  },[conversation.id, conversation.unreadMessages, props]);
+  },[conversation.id, conversation.unreadMessages, postReadReceipt]);
 
   return (
     <Box className={classes.root}>
       {conversation.otherUser && (
         <>
-          <Header
-            username={conversation.otherUser.username}
-            online={conversation.otherUser.online || false}
-          />
           <Box className={classes.chatContainer}>
             <Messages
               messages={conversation.messages}
@@ -60,19 +55,31 @@ const ActiveChat = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
+const defaultConvo: IConversationDTO = {
+  id: 0,
+  lastReadMessageId: 0,
+  latestMessageText: '',
+  messages: [],
+  otherUser: { id: 0, photoUrl: '', username: '' },
+  typing: false,
+  unreadMessages: 0,
+  user2: null
+}
+
+const mapStateToProps = (state: IStateDTO) => {
   return {
     user: state.user,
     conversation:
-      state.conversations &&
-      state.conversations.find(
-        (conversation) => conversation.otherUser.username === state.activeConversation
+      state.conversations && (
+        state.conversations.find(
+          (conversation) => conversation.otherUser.username === state.activeConversation
+        ) || defaultConvo
       )
   };
 };
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: any) => {
   return {
-    postReadReceipt: (conversationId) => {
+    postReadReceipt: (conversationId:number) => {
       dispatch(postReadReceipt({
         conversationId
       }));
@@ -84,3 +91,9 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(ActiveChat);
+
+interface IActiveChatProps {
+  conversation: IConversationDTO;
+  user: IUserDTO;
+  postReadReceipt(conversationId:number): void;
+}

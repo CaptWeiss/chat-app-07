@@ -61,10 +61,8 @@ router.post("/login", async (req, res, next) => {
     });
 
     if (!user) {
-      console.log({ error: `No user found for username: ${username}` });
       res.status(401).json({ error: "Wrong username and/or password" });
     } else if (!user.correctPassword(password)) {
-      console.log({ error: "Wrong username and/or password" });
       res.status(401).json({ error: "Wrong username and/or password" });
     } else {
       const token = jwt.sign(

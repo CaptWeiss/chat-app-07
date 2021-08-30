@@ -34,9 +34,8 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const SenderBubble = (props) => {
+const SenderBubble = ({time,text,lastReadMessageId,id,otherUser}: ISenderBubbleProps) => {
   const classes = useStyles();
-  const { time, text, lastReadMessageId, id, otherUser } = props;
   
   return (
     <Box className={classes.root}>
@@ -46,10 +45,18 @@ const SenderBubble = (props) => {
       </Box>
       {
         (lastReadMessageId===id)&&
-        <Avatar alt={otherUser.username} id={`message-focus-${lastReadMessageId}`} src={otherUser.photoUrl} className={classes.avatar}></Avatar>
+        <Avatar alt={otherUser.username} src={otherUser.photoUrl} className={classes.avatar}></Avatar>
       }
     </Box>
   );
 };
 
 export default SenderBubble;
+
+interface ISenderBubbleProps {
+  time: string;
+  text: string;
+  lastReadMessageId: number;
+  id: number;
+  otherUser: IOtherUserDTO;
+}
