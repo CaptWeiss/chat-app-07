@@ -41,10 +41,10 @@ const User = db.define("user", {
 });
 
 User.prototype.toJSON = function() {
-  const _user = this.get() ;
-  delete _user.password ;
-  delete _user.salt ;
-  return _user ;
+  const _user = this.get();
+  delete _user.password;
+  delete _user.salt;
+  return _user;
 }
 User.prototype.correctPassword = function (password) {
   return User.encryptPassword(password, this.salt()) === this.password();

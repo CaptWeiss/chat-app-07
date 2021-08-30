@@ -31,9 +31,9 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const OtherUserBubble = (props) => {
+const OtherUserBubble = ({otherUser,text,time}: IOtherUserBubbleProps) => {
   const classes = useStyles();
-  const { text, time, otherUser } = props;
+  
   return (
     <Box className={classes.root}>
       <Avatar alt={otherUser.username} src={otherUser.photoUrl} className={classes.avatar}></Avatar>
@@ -50,3 +50,9 @@ const OtherUserBubble = (props) => {
 };
 
 export default OtherUserBubble;
+
+interface IOtherUserBubbleProps {
+  otherUser: IOtherUserDTO;
+  time: string;
+  text: String;
+}
